@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="ing_card_corner_radius">16dp</dimen>
+    <dimen name="ing_card_margin">2dp</dimen>
+
+
+
+    <dimen name="ing_bubble_layout_pad">4dp</dimen>
+
+    <dimen name="remove_ing_width">20dp</dimen>
+    <dimen name="remove_ing_height">28dp</dimen>
+    <dimen name="remove_ing_padding">1dp</dimen>
+    <dimen name="remove_ing_text_size">12sp</dimen>
+
+    <dimen name="ing_name_width">40dp</dimen>
+    <dimen name="ing_name_height">28dp</dimen>
+    <dimen name="ing_name_padding">1dp</dimen>
+    <dimen name="ing_name_text_size">16sp</dimen>
+
+</resources>
