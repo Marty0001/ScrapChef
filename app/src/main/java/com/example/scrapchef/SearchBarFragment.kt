@@ -21,10 +21,9 @@ import android.widget.SearchView.OnQueryTextListener
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.view.marginStart
 import com.example.scrapchef.databinding.FragmentSearchBarBinding
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.snackbar.Snackbar
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -34,7 +33,7 @@ class SearchBarFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val currentIngredients = hashSetOf<String>()
-    private val maxIngredients = 8
+    private val maxIngredients = 6
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,14 +47,6 @@ class SearchBarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //hide listView when the searchbar doesn't have focus
-        binding.ingredientSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.ingredientSearchResults.visibility = View.VISIBLE
-            } else {
-                binding.ingredientSearchResults.visibility = View.GONE
-            }
-        }
 
         //make list of most common ingredients. csv file structured like: apple;9003
         val input = requireContext().assets.open("top-1k-ingredients.csv")
@@ -76,8 +67,19 @@ class SearchBarFragment : Fragment() {
             android.R.layout.simple_list_item_1,
             ingredientsList.toList()
         )
-
         binding.ingredientSearchResults.adapter = ingredientsAdapter
+
+
+        //hide listView when the searchbar doesn't have focus
+        binding.ingredientSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.ingredientSearchResults.visibility = View.VISIBLE
+                binding.searchRecipes.visibility = View.GONE
+            } else {
+                binding.ingredientSearchResults.visibility = View.GONE
+                binding.searchRecipes.visibility = View.VISIBLE
+            }
+        }
 
         //dynamically display relevant results in listview whenever a new character is entered in search bar
         binding.ingredientSearch.setOnQueryTextListener(object : OnQueryTextListener {
@@ -96,20 +98,6 @@ class SearchBarFragment : Fragment() {
             }
         })
 
-        //listener for when an ingredient is selected from listView
-        binding.ingredientSearchResults.setOnItemClickListener { parent, view, position, id ->
-            val selectedIngredient = parent.getItemAtPosition(position) as String
-
-            if(!currentIngredients.contains(selectedIngredient)) {
-
-                currentIngredients.add(selectedIngredient)
-
-                binding.totalIngredient.text="${currentIngredients.count()}/$maxIngredients"
-
-                addIngredientBubble(selectedIngredient)
-            }
-        }
-
         //clear focus from the search bar when the layout is clicked
         binding.searchFragmentLayout.setOnTouchListener { _, _ ->
             // Clear focus from the search bar when the layout is touched
@@ -122,11 +110,38 @@ class SearchBarFragment : Fragment() {
             // Return false to indicate that touch event is not consumed and can be passed to other listeners
             false
         }
+
+        //listener for when an ingredient is selected from listView
+        binding.ingredientSearchResults.setOnItemClickListener { parent, view, position, id ->
+            val selectedIngredient = parent.getItemAtPosition(position) as String
+
+            //if ingredient not already selected
+            if(!currentIngredients.contains(selectedIngredient)) {
+
+                //max ingredients already selected
+                if(currentIngredients.count() == maxIngredients){
+                    Snackbar.make(view, "Maximum ingredients selected", Snackbar.LENGTH_SHORT).show() }
+                else{
+                    //add ingredient to selected hashSet, update count display, and make ingredient bubble
+                    currentIngredients.add(selectedIngredient)
+                    binding.totalIngredient.text="${currentIngredients.count()}/$maxIngredients"
+                    addIngredientBubble(selectedIngredient) }
+            }
+        }
+
+        //listener for search recipes button
+        binding.searchRecipes.setOnClickListener {
+
+            if(currentIngredients.isEmpty()){
+                Snackbar.make(view, "Please select at least one ingredient", Snackbar.LENGTH_SHORT).show()
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
     private fun addIngredientBubble(selectedIngredient: String) {
 
+        //make card view
         val cardView = CardView(requireContext()).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -136,13 +151,14 @@ class SearchBarFragment : Fragment() {
                 setMargins(margin, margin, margin, margin)
             }
 
-            val shapeDrawable = MaterialShapeDrawable().apply {
+            val bubbleShape = MaterialShapeDrawable().apply {
                 setCornerSize(resources.getDimensionPixelSize(R.dimen.ing_card_corner_radius).toFloat())
                 fillColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.ingredient_bubble))
             }
 
-            background = shapeDrawable
+            background = bubbleShape//make cardview into bubble shape
 
+            //add linear layout to card view for horizontal display
             val linearLayout = LinearLayout(requireContext()).apply {
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -156,7 +172,7 @@ class SearchBarFragment : Fragment() {
 
             addView(linearLayout)
 
-            //create text view for ingredient name
+            //add text view to linear layout for ingredient name
             val textView = TextView(requireContext()).apply {
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -176,7 +192,7 @@ class SearchBarFragment : Fragment() {
 
             linearLayout.addView(textView)
 
-            //create button to remove ingredient
+            //add button to linear layout to remove ingredient
             val button = Button(requireContext()).apply {
                 layoutParams = ViewGroup.LayoutParams(
                     resources.getDimensionPixelSize(R.dimen.remove_ing_width),
@@ -209,7 +225,7 @@ class SearchBarFragment : Fragment() {
             linearLayout.addView(button)
         }
 
-        binding.ingredientBubbleLayout.addView(cardView)
+        binding.ingredientBubbleLayout.addView(cardView)//add ingredient bubble to display
     }
 
     override fun onDestroyView() {

@@ -18,11 +18,11 @@
         app:alignContent="stretch"
         app:alignItems="stretch"
         app:flexWrap="wrap"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ingredientSearchResults"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ingredientSearch"
-        app:layout_constraintVertical_bias="0.031">
+        app:layout_constraintVertical_bias="0.051">
 
     </com.google.android.flexbox.FlexboxLayout>
 
@@ -67,11 +67,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="4dp"
-        android:layout_marginBottom="236dp"
+        android:layout_marginBottom="16dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.30"
+        app:layout_constraintHeight_percent="0.45"
         app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintWidth_percent="0.9" />
@@ -82,17 +82,16 @@
         android:layout_height="48dp"
         android:layout_margin="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/logo"
         android:text="@string/find_recipe_button"
         android:textAlignment="center"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/ingredientSearchResults"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ingredientBubbleLayout"
-        app:layout_constraintVertical_bias="0.005"
-        android:backgroundTint="@color/logo" />
+        app:layout_constraintVertical_bias="0.015" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
