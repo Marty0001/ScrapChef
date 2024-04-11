@@ -2,5 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="ingredient_bubble">#B388FF</color>
+    <color name="ingredient_bubble">#00BCD4</color>
+    <color name="border">#E4007988</color>
+    <color name="logo">#009688</color>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.scrapchef
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -10,6 +12,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.view.inputmethod.InputMethodManager.HIDE_IMPLICIT_ONLY
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.LinearLayout
@@ -17,6 +21,8 @@ import android.widget.SearchView.OnQueryTextListener
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.view.marginStart
 import com.example.scrapchef.databinding.FragmentSearchBarBinding
 import com.google.android.material.shape.MaterialShapeDrawable
 import java.io.BufferedReader
@@ -27,6 +33,9 @@ class SearchBarFragment : Fragment() {
     private var _binding: FragmentSearchBarBinding? = null
     private val binding get() = _binding!!
 
+    private val currentIngredients = hashSetOf<String>()
+    private val maxIngredients = 8
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,9 +44,11 @@ class SearchBarFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //hide listView when the searchbar doesn't have focus
         binding.ingredientSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 binding.ingredientSearchResults.visibility = View.VISIBLE
@@ -56,9 +67,10 @@ class SearchBarFragment : Fragment() {
         while (line != null) {
             val row: List<String> = line.split(";")
             ingredientsList.add(row[0])
-            line = reader.readLine() // Read the next line
+            line = reader.readLine()
         }
 
+        //add 1k ingredients to listview
         val ingredientsAdapter: ArrayAdapter<String> = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_list_item_1,
@@ -67,8 +79,9 @@ class SearchBarFragment : Fragment() {
 
         binding.ingredientSearchResults.adapter = ingredientsAdapter
 
+        //dynamically display relevant results in listview whenever a new character is entered in search bar
         binding.ingredientSearch.setOnQueryTextListener(object : OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
+            override fun onQueryTextSubmit(query: String): Boolean {
                 binding.ingredientSearch.clearFocus()
                 if (ingredientsList.contains(query)) {
 
@@ -87,11 +100,31 @@ class SearchBarFragment : Fragment() {
         binding.ingredientSearchResults.setOnItemClickListener { parent, view, position, id ->
             val selectedIngredient = parent.getItemAtPosition(position) as String
 
-            Log.d("SearchBarFragment", "Selected Ingredient: $selectedIngredient")
-            addIngredientBubble(selectedIngredient)
+            if(!currentIngredients.contains(selectedIngredient)) {
+
+                currentIngredients.add(selectedIngredient)
+
+                binding.totalIngredient.text="${currentIngredients.count()}/$maxIngredients"
+
+                addIngredientBubble(selectedIngredient)
+            }
+        }
+
+        //clear focus from the search bar when the layout is clicked
+        binding.searchFragmentLayout.setOnTouchListener { _, _ ->
+            // Clear focus from the search bar when the layout is touched
+            binding.ingredientSearch.clearFocus()
+
+            // Hide the keyboard
+            val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(binding.searchFragmentLayout.windowToken, HIDE_IMPLICIT_ONLY)
+
+            // Return false to indicate that touch event is not consumed and can be passed to other listeners
+            false
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun addIngredientBubble(selectedIngredient: String) {
 
         val cardView = CardView(requireContext()).apply {
@@ -108,7 +141,6 @@ class SearchBarFragment : Fragment() {
                 fillColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.ingredient_bubble))
             }
 
-            // Set the shape drawable as background
             background = shapeDrawable
 
             val linearLayout = LinearLayout(requireContext()).apply {
@@ -132,7 +164,7 @@ class SearchBarFragment : Fragment() {
                 )
 
                 val padding = resources.getDimensionPixelSize(R.dimen.ing_name_padding)
-                setPadding(padding, padding, padding, padding)
+                setPadding(padding, padding, padding*2, padding)
 
                 gravity = Gravity.CENTER_VERTICAL
 
@@ -158,11 +190,20 @@ class SearchBarFragment : Fragment() {
                 setTextColor(ContextCompat.getColor(context, R.color.black))
 
                 setBackgroundColor(Color.TRANSPARENT)
+                setBackgroundResource(R.drawable.x_button_border)
 
-                text = "X"
+                text = "x"
 
                 setOnClickListener {
-                    // Handle button click
+                    //delete all elements in cardView and the CardView itself
+                    var viewToRemove: View? = this@apply // Start from the button
+                    while (viewToRemove != null && viewToRemove != binding.ingredientBubbleLayout) {
+                        val parent = viewToRemove.parent as? ViewGroup // Get the parent of the current view
+                        parent?.removeView(viewToRemove) // Remove the current view from its parent
+                        viewToRemove = parent // Move up to the next parent
+                    }
+                    currentIngredients.remove(selectedIngredient)
+                    binding.totalIngredient.text="${currentIngredients.count()}/$maxIngredients"
                 }
             }
             linearLayout.addView(button)
