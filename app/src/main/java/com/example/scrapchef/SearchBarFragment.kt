@@ -21,6 +21,7 @@ import android.widget.SearchView.OnQueryTextListener
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.navigation.Navigation
 import com.example.scrapchef.databinding.FragmentSearchBarBinding
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.snackbar.Snackbar
@@ -29,24 +30,26 @@ import java.io.InputStreamReader
 
 class SearchBarFragment : Fragment() {
 
-    private var _binding: FragmentSearchBarBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding : FragmentSearchBarBinding
 
-    private val currentIngredients = hashSetOf<String>()
+    private val currentIngredients = LinkedHashSet<String>()
     private val maxIngredients = 6
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSearchBarBinding.inflate(inflater, container, false)
+        binding = FragmentSearchBarBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
     }
 
     @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         //make list of most common ingredients. csv file structured like: apple;9003
         val input = requireContext().assets.open("top-1k-ingredients.csv")
@@ -98,9 +101,8 @@ class SearchBarFragment : Fragment() {
             }
         })
 
-        //clear focus from the search bar when the layout is clicked
+        //force clear focus from the search bar when empty space is touched
         binding.searchFragmentLayout.setOnTouchListener { _, _ ->
-            // Clear focus from the search bar when the layout is touched
             binding.ingredientSearch.clearFocus()
 
             // Hide the keyboard
@@ -112,7 +114,7 @@ class SearchBarFragment : Fragment() {
         }
 
         //listener for when an ingredient is selected from listView
-        binding.ingredientSearchResults.setOnItemClickListener { parent, view, position, id ->
+        binding.ingredientSearchResults.setOnItemClickListener { parent, view_, position, _ ->
             val selectedIngredient = parent.getItemAtPosition(position) as String
 
             //if ingredient not already selected
@@ -120,7 +122,7 @@ class SearchBarFragment : Fragment() {
 
                 //max ingredients already selected
                 if(currentIngredients.count() == maxIngredients){
-                    Snackbar.make(view, "Maximum ingredients selected", Snackbar.LENGTH_SHORT).show() }
+                    Snackbar.make(view_, "Maximum ingredients selected", Snackbar.LENGTH_SHORT).show() }
                 else{
                     //add ingredient to selected hashSet, update count display, and make ingredient bubble
                     currentIngredients.add(selectedIngredient)
@@ -134,6 +136,14 @@ class SearchBarFragment : Fragment() {
 
             if(currentIngredients.isEmpty()){
                 Snackbar.make(view, "Please select at least one ingredient", Snackbar.LENGTH_SHORT).show()
+            }else{
+
+                val action : SearchBarFragmentDirections.SearchToResults =
+                    SearchBarFragmentDirections.searchToResults(currentIngredients)
+
+                action.setSelectedIngredients(currentIngredients)
+
+                Navigation.findNavController(it).navigate(action)
             }
         }
     }
@@ -226,10 +236,5 @@ class SearchBarFragment : Fragment() {
         }
 
         binding.ingredientBubbleLayout.addView(cardView)//add ingredient bubble to display
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

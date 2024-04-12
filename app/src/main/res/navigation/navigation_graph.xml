@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/searchBarFragment">
+
+    <fragment
+        android:id="@+id/searchBarFragment"
+        android:name="com.example.scrapchef.SearchBarFragment"
+        android:label="fragment_search_bar"
+        tools:layout="@layout/fragment_search_bar" >
+        <action
+            android:id="@+id/search_to_results"
+            app:destination="@id/recipeSearchResults" />
+    </fragment>
+    <fragment
+        android:id="@+id/recipeSearchResults"
+        android:name="com.example.scrapchef.RecipeSearchResults"
+        android:label="fragment_recipe_search_results"
+        tools:layout="@layout/fragment_recipe_search_results" >
+        <argument android:name="selectedIngredients"
+            app:argType="java.util.LinkedHashSet" />
+        <action
+            android:id="@+id/back_to_search"
+            app:destination="@id/searchBarFragment" />
+    </fragment>
+</navigation>

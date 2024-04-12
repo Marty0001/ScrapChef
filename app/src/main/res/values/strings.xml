@@ -3,4 +3,6 @@
     <string name="ing_counter">0/6</string>
     <string name="find_recipe_button">Find Recipes</string>
     <string name="scrap_chef_logo">Scrap Chef Logo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
