@@ -35,16 +35,30 @@ class SearchBarFragment : Fragment() {
     private val currentIngredients = LinkedHashSet<String>()
     private val maxIngredients = 6
 
+    @SuppressLint("SetTextI18n")
+    override fun onStart() {
+        super.onStart()
+
+        arguments?.let{ it ->
+            val args = SearchBarFragmentArgs.fromBundle(it)
+
+            if(args.returnedIngredients!=null)
+                for(ingredient in args.returnedIngredients!!){
+                    currentIngredients.add(ingredient.toString())
+                    addIngredientBubble(ingredient.toString())
+                }
+
+        }
+
+        binding.totalIngredient.text = "${currentIngredients.count()}/$maxIngredients"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSearchBarBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
     @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
@@ -213,10 +227,10 @@ class SearchBarFragment : Fragment() {
 
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.remove_ing_text_size).toFloat())
 
-                setTextColor(ContextCompat.getColor(context, R.color.black))
+                setTextColor(ContextCompat.getColor(context, R.color.border))
 
                 setBackgroundColor(Color.TRANSPARENT)
-                setBackgroundResource(R.drawable.x_button_border)
+                //setBackgroundResource(R.drawable.x_button_border)
 
                 text = "x"
 

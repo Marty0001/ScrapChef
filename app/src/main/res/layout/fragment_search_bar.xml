@@ -22,7 +22,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ingredientSearch"
-        app:layout_constraintVertical_bias="0.051">
+        app:layout_constraintVertical_bias="0.05">
 
     </com.google.android.flexbox.FlexboxLayout>
 
@@ -33,7 +33,6 @@
         android:layout_marginTop="72dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/ing_counter"
         android:textColor="#8C000000"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/ingredientBubbleLayout"
@@ -64,7 +63,7 @@
 
     <ListView
         android:id="@+id/ingredientSearchResults"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="4dp"
         android:layout_marginBottom="16dp"
@@ -74,7 +73,7 @@
         app:layout_constraintHeight_percent="0.45"
         app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.9" />
+        android:background="@drawable/list_view_background"/>
 
     <Button
         android:id="@+id/searchRecipes"
