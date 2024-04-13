@@ -101,7 +101,7 @@ class SearchBarFragment : Fragment() {
         //dynamically display relevant results in listview whenever a new character is entered in search bar
         binding.ingredientSearch.setOnQueryTextListener(object : OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                binding.ingredientSearch.clearFocus()
+
                 if (ingredientsList.contains(query)) {
 
                     ingredientsAdapter.filter.filter(query)
@@ -110,9 +110,28 @@ class SearchBarFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                ingredientsAdapter.filter.filter(newText)
+                newText?.let { currentText ->
+                    // list to hold the filtered ingredients
+                    val filteredIngredients = mutableListOf<String>()
+
+                    // add the current text to the filtered list if it's not empty
+                    if (currentText.isNotEmpty()) {
+                        filteredIngredients.add(currentText)
+                    }
+
+                    // add the filtered ingredients based on the search query
+                    ingredientsList.filterTo(filteredIngredients) { ingredient ->
+                        ingredient.contains(currentText, ignoreCase = true)
+                    }
+
+                    // update adapter
+                    ingredientsAdapter.clear()
+                    ingredientsAdapter.addAll(filteredIngredients)
+                    ingredientsAdapter.notifyDataSetChanged()
+                }
                 return false
             }
+
         })
 
         //force clear focus from the search bar when empty space is touched

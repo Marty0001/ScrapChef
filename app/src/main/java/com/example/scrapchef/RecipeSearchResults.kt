@@ -15,13 +15,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.scrapchef.databinding.FragmentRecipeSearchResultsBinding
 
 
-class RecipeSearchResults : Fragment() {
+class RecipeSearchResults : Fragment(), RecyclerAdapter.OnRecipeItemClickListener {
 
     private lateinit var binding: FragmentRecipeSearchResultsBinding
     private lateinit var adapter: RecyclerAdapter
 
     private val currentIngredients : MutableList<String> = mutableListOf()
-    var recipeList: MutableMap<String, RecipeData> = mutableMapOf()
+    //var recipeList: MutableMap<String, RecipeData> = mutableMapOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,12 +41,20 @@ class RecipeSearchResults : Fragment() {
 
     }
 
+    override fun onItemClick(recipe: RecipeData) {
+        Log.i("Results", recipe.title)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //underline back button text
+        binding.backButton.paint?.isUnderlineText = true
+
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        binding.backButton.paint?.isUnderlineText = true
+        //show loading icon while the recycler view is empty
+        binding.progressBar.visibility = View.VISIBLE
 
         //receive selected ingredients from search fragment
         arguments?.let { it ->
@@ -60,16 +68,17 @@ class RecipeSearchResults : Fragment() {
 
             recipeViewModel.fetchRecipes(requireContext(), currentIngredients)
 
+            //wait to fetch recipes, then fill the recycler view
             recipeViewModel.recipeList.observe(viewLifecycleOwner) { recipeMap ->
 
-                adapter = RecyclerAdapter(recipeMap)
+                adapter = RecyclerAdapter(recipeMap, currentIngredients)
+                adapter.setOnRecipeItemClickListener(this)
                 binding.recyclerView.adapter = adapter
 
-                recipeList = recipeMap
-
-                Log.i("SearchResults", "Recipe count: ${recipeList.size}")
+                binding.progressBar.visibility = View.GONE
             }
 
+            //navigate back to search fragment and send back the selected ingredients to remake the ingredient bubbles
             binding.backButton.setOnClickListener {
                 val action: RecipeSearchResultsDirections.BackToSearch =
                     RecipeSearchResultsDirections.backToSearch()

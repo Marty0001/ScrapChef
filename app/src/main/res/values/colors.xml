@@ -7,5 +7,7 @@
     <color name="logo">#009688</color>
     <color name="grey_bg">#634E4E4E</color>
     <color name="recipe_card">#8000BCD4</color>
+    <color name="check_mark_symbol">#4CAF50</color>
+    <color name="x_symbol">#E91E3C</color>
 
 </resources>

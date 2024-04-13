@@ -20,6 +20,7 @@
         app:flexWrap="wrap"
         app:layout_constraintBottom_toTopOf="@+id/ingredientSearchResults"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ingredientSearch"
         app:layout_constraintVertical_bias="0.05">
@@ -54,6 +55,7 @@
         android:queryHint="search ingredients"
         app:layout_constraintBottom_toTopOf="@+id/ingredientSearchResults"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.025"
@@ -67,13 +69,13 @@
         android:layout_height="0dp"
         android:layout_margin="4dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/list_view_background"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.45"
         app:layout_constraintHorizontal_bias="0.487"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@drawable/list_view_background"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/searchRecipes"
@@ -87,7 +89,7 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ingredientBubbleLayout"
         app:layout_constraintVertical_bias="0.015" />

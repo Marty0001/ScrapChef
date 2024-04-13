@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/card_view"
@@ -34,32 +35,53 @@
             android:id="@+id/recipeTitle"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="4dp"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:textAlignment="textEnd"
             android:textColor="@color/black"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.809"
+            app:layout_constraintHorizontal_bias="0.8"
             app:layout_constraintLeft_toRightOf="@+id/recipeImage"
             app:layout_constraintStart_toEndOf="@+id/recipeImage"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/recipeDetail"
-            android:layout_width="200dp"
-            android:layout_height="16dp"
-            android:layout_marginStart="4dp"
+            android:id="@+id/usedRecipes"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
-            android:textAlignment="textEnd"
+            android:textAlignment="textStart"
+            app:drawableLeftCompat="@drawable/check_mark"
+            app:drawableStartCompat="@drawable/check_mark"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.789"
-
+            app:layout_constraintHorizontal_bias="0.95"
             app:layout_constraintLeft_toRightOf="@id/recipeImage"
             app:layout_constraintStart_toEndOf="@+id/recipeImage"
             app:layout_constraintTop_toBottomOf="@+id/recipeTitle" />
+
+        <TextView
+            android:id="@+id/unusedRecipies"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:textAlignment="textStart"
+            app:drawableLeftCompat="@drawable/x_symbol"
+            app:drawableStartCompat="@drawable/x_symbol"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.95"
+            app:layout_constraintLeft_toRightOf="@id/recipeImage"
+            app:layout_constraintStart_toEndOf="@+id/recipeImage"
+            app:layout_constraintTop_toBottomOf="@id/usedRecipes" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
