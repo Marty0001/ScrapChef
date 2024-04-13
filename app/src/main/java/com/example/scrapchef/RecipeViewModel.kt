@@ -16,6 +16,45 @@ class RecipeViewModel : ViewModel() {
     private val _recipeList: MutableLiveData<MutableMap<String, RecipeData>> = MutableLiveData()
     val recipeList: LiveData<MutableMap<String, RecipeData>> = _recipeList
 
+    fun fetchRecipeDirections(context: Context, ingredients : List<String>){
+
+        //make ingredients query. structured like: ing1,+ing2,+ing3...
+        val ingredientsQuery = StringBuilder()
+        ingredientsQuery.append(ingredients[0])
+
+        for (item in ingredients.subList(1, ingredients.size)) {
+            ingredientsQuery.append(",+$item")
+        }
+
+        val url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients=$ingredientsQuery&sort=max-used-ingredients&number=5" +
+                "&apiKey=42c0d09e6c564072a4cbbd1a204a5c64"
+
+        val queue = Volley.newRequestQueue(context)
+
+        val stringRequest = StringRequest(
+            Request.Method.GET, url, { response ->
+
+                val recipeArray = JSONArray(response)
+
+                val tempRecipeList: MutableMap<String, RecipeData> = mutableMapOf()
+
+                for (i in 0 until recipeArray.length()) {
+                    val recipe: JSONObject = recipeArray.getJSONObject(i)
+                    tempRecipeList[recipe.getString("title")] = addRecipe(recipe)
+                }
+
+                _recipeList.value = tempRecipeList // Update the value here after fetch is done
+
+                Log.i("GetIngredients", "fetch request successful")
+            },
+            {
+                Log.i("GetIngredients", "fetch request failed")
+            })
+
+        queue.add(stringRequest)
+
+    }
+
     fun fetchRecipes(context: Context, ingredients : List<String>){
 
         //make ingredients query. structured like: ing1,+ing2,+ing3...

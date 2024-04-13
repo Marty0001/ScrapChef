@@ -13,7 +13,7 @@
         <action
             android:id="@+id/search_to_results"
             app:destination="@id/recipeSearchResults"
-            app:enterAnim="@anim/load_search_results" />
+            app:enterAnim="@anim/right_to_left" />
         <argument
             android:name="returnedIngredients"
             app:argType="java.util.LinkedHashSet"
@@ -30,6 +30,26 @@
         <action
             android:id="@+id/back_to_search"
             app:destination="@id/searchBarFragment"
-            app:enterAnim="@anim/back_to_search" />
+            app:enterAnim="@anim/left_to_right" />
+        <action
+            android:id="@+id/result_to_recipe"
+            app:destination="@id/recipeDirections"
+            app:enterAnim="@anim/right_to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/recipeDirections"
+        android:name="com.example.scrapchef.RecipeDirections"
+        android:label="fragment_recipe_directions"
+        tools:layout="@layout/fragment_recipe_directions" >
+        <action
+            android:id="@+id/back_to_results"
+            app:destination="@id/recipeSearchResults"
+            app:enterAnim="@anim/left_to_right" />
+        <argument
+            android:name="recipeId"
+            app:argType="integer" />
+        <argument
+            android:name="selectedIngredients"
+            app:argType="java.util.LinkedHashSet" />
     </fragment>
 </navigation>

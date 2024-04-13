@@ -1,14 +1,10 @@
 package com.example.scrapchef
 
-import android.graphics.Paint
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,8 +16,8 @@ class RecipeSearchResults : Fragment(), RecyclerAdapter.OnRecipeItemClickListene
     private lateinit var binding: FragmentRecipeSearchResultsBinding
     private lateinit var adapter: RecyclerAdapter
 
-    private val currentIngredients : MutableList<String> = mutableListOf()
-    //var recipeList: MutableMap<String, RecipeData> = mutableMapOf()
+    private val currentIngredientsList : MutableList<String> = mutableListOf()
+    private val currentIngredientsSet = LinkedHashSet<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,8 +37,14 @@ class RecipeSearchResults : Fragment(), RecyclerAdapter.OnRecipeItemClickListene
 
     }
 
-    override fun onItemClick(recipe: RecipeData) {
-        Log.i("Results", recipe.title)
+    override fun onItemClick(recipeId: Int) {
+        val action: RecipeSearchResultsDirections.ResultToRecipe =
+            RecipeSearchResultsDirections.resultToRecipe(recipeId, currentIngredientsSet)
+
+        action.setRecipeId(recipeId)
+        action.setSelectedIngredients(currentIngredientsSet)
+
+        Navigation.findNavController(requireView()).navigate(action)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,17 +63,18 @@ class RecipeSearchResults : Fragment(), RecyclerAdapter.OnRecipeItemClickListene
             val args = RecipeSearchResultsArgs.fromBundle(it)
 
             for (ingredient in args.selectedIngredients) {
-                currentIngredients.add(ingredient.toString())
+                currentIngredientsList.add(ingredient.toString())
+                currentIngredientsSet.add(ingredient.toString())
             }
 
             val recipeViewModel = ViewModelProvider(this)[RecipeViewModel::class.java]
 
-            recipeViewModel.fetchRecipes(requireContext(), currentIngredients)
+            recipeViewModel.fetchRecipes(requireContext(), currentIngredientsList)
 
             //wait to fetch recipes, then fill the recycler view
             recipeViewModel.recipeList.observe(viewLifecycleOwner) { recipeMap ->
 
-                adapter = RecyclerAdapter(recipeMap, currentIngredients)
+                adapter = RecyclerAdapter(recipeMap, currentIngredientsList)
                 adapter.setOnRecipeItemClickListener(this)
                 binding.recyclerView.adapter = adapter
 

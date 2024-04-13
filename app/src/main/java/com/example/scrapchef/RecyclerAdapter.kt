@@ -12,7 +12,7 @@ class RecyclerAdapter(private val recipes: Map<String, RecipeData>, private val 
     RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
     interface OnRecipeItemClickListener {
-        fun onItemClick(recipe: RecipeData)
+        fun onItemClick(recipeId: Int)
     }
 
     private var itemClickListener: OnRecipeItemClickListener? = null
@@ -38,14 +38,13 @@ class RecyclerAdapter(private val recipes: Map<String, RecipeData>, private val 
 
     inner class ViewHolder(private val binding: CardLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
         init {
+            //click listener for whole card view
             binding.root.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    val recipeEntry = recipes.entries.elementAt(position)
-                    val recipe = recipeEntry.value
-                    itemClickListener?.onItemClick(recipe)
+                    val recipeId = recipes.entries.elementAt(position).value.id
+                    itemClickListener?.onItemClick(recipeId)
                 }
             }
         }
@@ -75,6 +74,7 @@ class RecyclerAdapter(private val recipes: Map<String, RecipeData>, private val 
                 }
             }
 
+            //only show the list if its not empty
             if(usedIngredientsCommaList.isNotEmpty())
                 binding.usedRecipes.text = "$usedIngredientsCommaList"
             else
@@ -87,7 +87,7 @@ class RecyclerAdapter(private val recipes: Map<String, RecipeData>, private val 
 
             Glide.with(binding.root.context)
                 .load(recipe.image)
-                .placeholder(R.drawable.scrapchef_logo)
+                //.placeholder(R.drawable.scrapchef_logo)
                 .into(binding.recipeImage)
         }
     }
