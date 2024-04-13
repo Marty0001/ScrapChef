@@ -33,10 +33,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.80"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_logo"
-        app:layout_constraintVertical_bias="0.538"
+        app:layout_constraintVertical_bias="0.2"
         app:layout_constraintWidth_percent="0.95"
         app:navGraph="@navigation/navigation_graph" />
 

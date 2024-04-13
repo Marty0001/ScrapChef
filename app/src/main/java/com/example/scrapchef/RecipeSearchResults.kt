@@ -11,19 +11,40 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.scrapchef.databinding.FragmentRecipeSearchResultsBinding
 
 
 class RecipeSearchResults : Fragment() {
 
     private lateinit var binding: FragmentRecipeSearchResultsBinding
+    private lateinit var adapter: RecyclerAdapter
 
     private val currentIngredients : MutableList<String> = mutableListOf()
     var recipeList: MutableMap<String, RecipeData> = mutableMapOf()
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRecipeSearchResultsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onStart() {
         super.onStart()
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         binding.backButton.paint?.isUnderlineText = true
 
@@ -31,15 +52,18 @@ class RecipeSearchResults : Fragment() {
         arguments?.let { it ->
             val args = RecipeSearchResultsArgs.fromBundle(it)
 
-            for(ingredient in args.selectedIngredients){
+            for (ingredient in args.selectedIngredients) {
                 currentIngredients.add(ingredient.toString())
             }
 
             val recipeViewModel = ViewModelProvider(this)[RecipeViewModel::class.java]
 
-            recipeViewModel.fetchRecipes( requireContext(), currentIngredients)
+            recipeViewModel.fetchRecipes(requireContext(), currentIngredients)
 
-            recipeViewModel.recipeList.observe(this) { recipeMap ->
+            recipeViewModel.recipeList.observe(viewLifecycleOwner) { recipeMap ->
+
+                adapter = RecyclerAdapter(recipeMap)
+                binding.recyclerView.adapter = adapter
 
                 recipeList = recipeMap
 
@@ -56,25 +80,6 @@ class RecipeSearchResults : Fragment() {
 
             }
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentRecipeSearchResultsBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
     }
 
 }

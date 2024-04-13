@@ -227,7 +227,7 @@ class SearchBarFragment : Fragment() {
 
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.remove_ing_text_size).toFloat())
 
-                setTextColor(ContextCompat.getColor(context, R.color.border))
+                setTextColor(ContextCompat.getColor(context, R.color.x_button))
 
                 setBackgroundColor(Color.TRANSPARENT)
                 //setBackgroundResource(R.drawable.x_button_border)

@@ -12,7 +12,8 @@
         tools:layout="@layout/fragment_search_bar" >
         <action
             android:id="@+id/search_to_results"
-            app:destination="@id/recipeSearchResults" />
+            app:destination="@id/recipeSearchResults"
+            app:enterAnim="@anim/load_search_results" />
         <argument
             android:name="returnedIngredients"
             app:argType="java.util.LinkedHashSet"
@@ -28,6 +29,7 @@
             app:argType="java.util.LinkedHashSet" />
         <action
             android:id="@+id/back_to_search"
-            app:destination="@id/searchBarFragment" />
+            app:destination="@id/searchBarFragment"
+            app:enterAnim="@anim/back_to_search" />
     </fragment>
 </navigation>
