@@ -46,8 +46,8 @@
             app:destination="@id/recipeSearchResults"
             app:enterAnim="@anim/left_to_right" />
         <argument
-            android:name="recipeId"
-            app:argType="integer" />
+            android:name="recipe"
+            app:argType="com.example.scrapchef.RecipeData" />
         <argument
             android:name="selectedIngredients"
             app:argType="java.util.LinkedHashSet" />

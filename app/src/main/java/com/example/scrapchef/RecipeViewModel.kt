@@ -16,17 +16,12 @@ class RecipeViewModel : ViewModel() {
     private val _recipeList: MutableLiveData<MutableMap<String, RecipeData>> = MutableLiveData()
     val recipeList: LiveData<MutableMap<String, RecipeData>> = _recipeList
 
-    fun fetchRecipeDirections(context: Context, ingredients : List<String>){
+    private val _recipeDirections: MutableLiveData<MutableMap<String, RecipeDirectionsData>> = MutableLiveData()
+    val recipeDirections: LiveData<MutableMap<String, RecipeDirectionsData>> = _recipeDirections
 
-        //make ingredients query. structured like: ing1,+ing2,+ing3...
-        val ingredientsQuery = StringBuilder()
-        ingredientsQuery.append(ingredients[0])
+    fun fetchRecipeDirections(context: Context, recipeId : Int){
 
-        for (item in ingredients.subList(1, ingredients.size)) {
-            ingredientsQuery.append(",+$item")
-        }
-
-        val url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients=$ingredientsQuery&sort=max-used-ingredients&number=5" +
+        val url = "https://api.spoonacular.com/recipes/$recipeId/analyzedInstructions?stepBreakdown" +
                 "&apiKey=42c0d09e6c564072a4cbbd1a204a5c64"
 
         val queue = Volley.newRequestQueue(context)
@@ -36,19 +31,20 @@ class RecipeViewModel : ViewModel() {
 
                 val recipeArray = JSONArray(response)
 
-                val tempRecipeList: MutableMap<String, RecipeData> = mutableMapOf()
+                val tempRecipeDirections: MutableMap<String, RecipeDirectionsData> = mutableMapOf()
 
                 for (i in 0 until recipeArray.length()) {
-                    val recipe: JSONObject = recipeArray.getJSONObject(i)
-                    tempRecipeList[recipe.getString("title")] = addRecipe(recipe)
+                    val recipeObject: JSONObject = recipeArray.getJSONObject(i)
+                    val recipeDirectionsData = addRecipeDirectionsData(recipeObject)
+                    tempRecipeDirections[recipeDirectionsData.name] = recipeDirectionsData
                 }
 
-                _recipeList.value = tempRecipeList // Update the value here after fetch is done
+                _recipeDirections.value = tempRecipeDirections // Update the value here after fetch is done
 
-                Log.i("GetIngredients", "fetch request successful")
+                Log.i("GetRecipeDirections", "fetch request successful")
             },
             {
-                Log.i("GetIngredients", "fetch request failed")
+                Log.i("GetRecipeDirections", "fetch request failed")
             })
 
         queue.add(stringRequest)
@@ -147,5 +143,54 @@ class RecipeViewModel : ViewModel() {
         }
         return ingredients
     }
+
+    fun addRecipeDirectionsData(recipeObject: JSONObject): RecipeDirectionsData {
+        val name = recipeObject.getString("name")
+        val stepsArray = recipeObject.getJSONArray("steps")
+
+        val stepsList: MutableList<Step> = mutableListOf()
+
+        for (j in 0 until stepsArray.length()) {
+            val stepObject = stepsArray.getJSONObject(j)
+            val number = stepObject.getInt("number")
+            val step = stepObject.getString("step")
+
+            val ingredientsArray = stepObject.getJSONArray("ingredients")
+            val ingredientsList: MutableList<Ingredient> = mutableListOf()
+            for (k in 0 until ingredientsArray.length()) {
+                val ingredientObject = ingredientsArray.getJSONObject(k)
+                val ingredientId = ingredientObject.optInt("id")
+                val ingredientName = ingredientObject.optString("name")
+                val ingredientAmount = ingredientObject.optDouble("amount")
+                val ingredientUnit = ingredientObject.optString("unit")
+                val ingredientAisle = ingredientObject.optString("aisle")
+                val ingredientOriginal = ingredientObject.optString("original")
+                val ingredientOriginalName = ingredientObject.optString("originalName")
+                val ingredientExtendedName = ingredientObject.optString("extendedName", null)
+                val ingredientImage = ingredientObject.optString("image")
+
+                val ingredient = Ingredient(
+                    ingredientId,
+                    ingredientAmount,
+                    ingredientUnit,
+                    ingredientAisle,
+                    ingredientName,
+                    ingredientOriginal,
+                    ingredientOriginalName,
+                    ingredientExtendedName,
+                    ingredientImage
+                )
+                ingredientsList.add(ingredient)
+            }
+
+            val stepData = Step(number, step, ingredientsList)
+            stepsList.add(stepData)
+        }
+
+        return RecipeDirectionsData(name, stepsList)
+    }
+
+
+
 
 }

@@ -37,11 +37,11 @@ class RecipeSearchResults : Fragment(), RecyclerAdapter.OnRecipeItemClickListene
 
     }
 
-    override fun onItemClick(recipeId: Int) {
+    override fun onItemClick(recipe: RecipeData) {
         val action: RecipeSearchResultsDirections.ResultToRecipe =
-            RecipeSearchResultsDirections.resultToRecipe(recipeId, currentIngredientsSet)
+            RecipeSearchResultsDirections.resultToRecipe(recipe, currentIngredientsSet)
 
-        action.setRecipeId(recipeId)
+        action.setRecipe(recipe)
         action.setSelectedIngredients(currentIngredientsSet)
 
         Navigation.findNavController(requireView()).navigate(action)

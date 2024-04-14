@@ -1,5 +1,7 @@
 package com.example.scrapchef
 
+import java.io.Serializable //serializable so RecipeData object can be passed as an argument between fragments
+
 data class RecipeData(
     val id: Int,
     val title: String,
@@ -9,6 +11,17 @@ data class RecipeData(
     val missedIngredients: List<Ingredient>,
     val usedIngredients: List<Ingredient>,
     val unusedIngredients: List<Ingredient>,
+) : Serializable
+
+data class RecipeDirectionsData(
+    val name: String,
+    val steps: List<Step>
+)
+
+data class Step(
+    val number: Int,
+    val step: String,
+    val ingredients: List<Ingredient>,
 )
 
 data class Ingredient(

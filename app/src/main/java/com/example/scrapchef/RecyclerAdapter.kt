@@ -12,7 +12,7 @@ class RecyclerAdapter(private val recipes: Map<String, RecipeData>, private val 
     RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
     interface OnRecipeItemClickListener {
-        fun onItemClick(recipeId: Int)
+        fun onItemClick(recipe: RecipeData)
     }
 
     private var itemClickListener: OnRecipeItemClickListener? = null
@@ -43,8 +43,8 @@ class RecyclerAdapter(private val recipes: Map<String, RecipeData>, private val 
             binding.root.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    val recipeId = recipes.entries.elementAt(position).value.id
-                    itemClickListener?.onItemClick(recipeId)
+                    val recipe = recipes.entries.elementAt(position).value
+                    itemClickListener?.onItemClick(recipe)
                 }
             }
         }
