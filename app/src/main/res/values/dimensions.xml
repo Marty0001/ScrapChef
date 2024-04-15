@@ -17,4 +17,9 @@
     <dimen name="ing_name_padding">2dp</dimen>
     <dimen name="ing_name_text_size">16sp</dimen>
 
+    <dimen name="recipe_step_width">300dp</dimen>
+    <dimen name="step_row_margin">16dp</dimen>
+    <dimen name="direction_text_size">18sp</dimen>
+
+
 </resources>

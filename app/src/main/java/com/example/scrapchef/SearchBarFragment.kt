@@ -21,6 +21,7 @@ import android.widget.SearchView.OnQueryTextListener
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.Navigation
 import com.example.scrapchef.databinding.FragmentSearchBarBinding
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -42,12 +43,12 @@ class SearchBarFragment : Fragment() {
         arguments?.let{ it ->
             val args = SearchBarFragmentArgs.fromBundle(it)
 
+            //not null means fragment was loaded from recipe results fragment and has to reload ingredient bubbles
             if(args.returnedIngredients!=null)
                 for(ingredient in args.returnedIngredients!!){
                     currentIngredients.add(ingredient.toString())
                     addIngredientBubble(ingredient.toString())
                 }
-
         }
 
         binding.totalIngredient.text = "${currentIngredients.count()}/$maxIngredients"
@@ -230,6 +231,7 @@ class SearchBarFragment : Fragment() {
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.ing_name_text_size).toFloat())
                 setTextColor(ContextCompat.getColor(context, R.color.black))
 
+                //typeface = ResourcesCompat.getFont(context, R.font.lora)
                 text = selectedIngredient
             }
 

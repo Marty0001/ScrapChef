@@ -13,9 +13,11 @@ import org.json.JSONObject
 
 class RecipeViewModel : ViewModel() {
 
+    //list of recipes gotten by searching by ingredients
     private val _recipeList: MutableLiveData<MutableMap<String, RecipeData>> = MutableLiveData()
     val recipeList: LiveData<MutableMap<String, RecipeData>> = _recipeList
 
+    //directions for individual recipe
     private val _recipeDirections: MutableLiveData<MutableMap<String, RecipeDirectionsData>> = MutableLiveData()
     val recipeDirections: LiveData<MutableMap<String, RecipeDirectionsData>> = _recipeDirections
 
@@ -39,7 +41,7 @@ class RecipeViewModel : ViewModel() {
                     tempRecipeDirections[recipeDirectionsData.name] = recipeDirectionsData
                 }
 
-                _recipeDirections.value = tempRecipeDirections // Update the value here after fetch is done
+                _recipeDirections.value = tempRecipeDirections //update after fetch is done
 
                 Log.i("GetRecipeDirections", "fetch request successful")
             },
@@ -78,7 +80,7 @@ class RecipeViewModel : ViewModel() {
                     tempRecipeList[recipe.getString("title")] = addRecipe(recipe)
                 }
 
-                _recipeList.value = tempRecipeList // Update the value here after fetch is done
+                _recipeList.value = tempRecipeList //update after fetch is done
 
                 Log.i("GetIngredients", "fetch request successful")
             },
@@ -144,7 +146,7 @@ class RecipeViewModel : ViewModel() {
         return ingredients
     }
 
-    fun addRecipeDirectionsData(recipeObject: JSONObject): RecipeDirectionsData {
+    private fun addRecipeDirectionsData(recipeObject: JSONObject): RecipeDirectionsData {
         val name = recipeObject.getString("name")
         val stepsArray = recipeObject.getJSONArray("steps")
 
@@ -161,12 +163,12 @@ class RecipeViewModel : ViewModel() {
                 val ingredientObject = ingredientsArray.getJSONObject(k)
                 val ingredientId = ingredientObject.optInt("id")
                 val ingredientName = ingredientObject.optString("name")
-                val ingredientAmount = ingredientObject.optDouble("amount")
-                val ingredientUnit = ingredientObject.optString("unit")
+                val ingredientAmount = ingredientObject.optDouble("amount", 0.0)
+                val ingredientUnit = ingredientObject.optString("unit", "")
                 val ingredientAisle = ingredientObject.optString("aisle")
                 val ingredientOriginal = ingredientObject.optString("original")
                 val ingredientOriginalName = ingredientObject.optString("originalName")
-                val ingredientExtendedName = ingredientObject.optString("extendedName", null)
+                val ingredientExtendedName = ingredientObject.optString("extendedName")
                 val ingredientImage = ingredientObject.optString("image")
 
                 val ingredient = Ingredient(

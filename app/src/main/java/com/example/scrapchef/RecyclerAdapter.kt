@@ -52,9 +52,9 @@ class RecyclerAdapter(private val recipes: Map<String, RecipeData>, private val 
         fun bind(recipeEntry: Map.Entry<String, RecipeData>) {
             val recipe = recipeEntry.value
 
-            // Bind data to views
             binding.recipeTitle.text = recipe.title
 
+            //list of all used ingredients in recipe, even ones not selected by user
             val usedIngredientsList = recipe.usedIngredients.map { it.name }
 
             val usedIngredientsCommaList = StringBuilder()
@@ -62,6 +62,8 @@ class RecyclerAdapter(private val recipes: Map<String, RecipeData>, private val 
 
             //for every selected ingredient, if the recipe contains it, add it to used list
             for (ingredient in ingredients) {
+
+                //if a user selected ingredient is used in the recipe, add it to the used list
                 if (usedIngredientsList.any { it.contains(ingredient, ignoreCase = true) }) {
                     if (usedIngredientsCommaList.isNotEmpty())
                         usedIngredientsCommaList.append(", ")
@@ -76,15 +78,16 @@ class RecyclerAdapter(private val recipes: Map<String, RecipeData>, private val 
 
             //only show the list if its not empty
             if(usedIngredientsCommaList.isNotEmpty())
-                binding.usedRecipes.text = "$usedIngredientsCommaList"
+                binding.usedIngredients.text = "$usedIngredientsCommaList"
             else
-                binding.usedRecipes.visibility = View.GONE
+                binding.usedIngredients.visibility = View.GONE
 
             if(unusedIngredientsCommaList.isNotEmpty())
-                binding.unusedRecipies.text = "$unusedIngredientsCommaList"
+                binding.unusedIngredients.text = "$unusedIngredientsCommaList"
             else
-                binding.unusedRecipies.visibility = View.GONE
+                binding.unusedIngredients.visibility = View.GONE
 
+            //download image
             Glide.with(binding.root.context)
                 .load(recipe.image)
                 //.placeholder(R.drawable.scrapchef_logo)

@@ -16,8 +16,8 @@ class RecipeSearchResults : Fragment(), RecyclerAdapter.OnRecipeItemClickListene
     private lateinit var binding: FragmentRecipeSearchResultsBinding
     private lateinit var adapter: RecyclerAdapter
 
-    private val currentIngredientsList : MutableList<String> = mutableListOf()
-    private val currentIngredientsSet = LinkedHashSet<String>()
+    private val currentIngredientsList : MutableList<String> = mutableListOf()//for fetching recipes and displaying used and unused ingredients
+    private val currentIngredientsSet = LinkedHashSet<String>()//for saving selected ingredients when navigating between fragments
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,12 +29,10 @@ class RecipeSearchResults : Fragment(), RecyclerAdapter.OnRecipeItemClickListene
 
     override fun onStart() {
         super.onStart()
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onItemClick(recipe: RecipeData) {
