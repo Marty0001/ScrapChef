@@ -76,27 +76,21 @@ class RecyclerAdapter(private val recipes: Map<String, RecipeData>, private val 
                     aisleNameIngredientsList.any { ingredient.contains(it, ignoreCase = true) } ||
                     missedIngredientsList.any { ingredient.contains(it, ignoreCase = true) }) {
 
+                    binding.usedIngredients.visibility = View.VISIBLE
                     if (usedIngredientsCheckList.isNotEmpty())
                         usedIngredientsCheckList.append(", ")
                     usedIngredientsCheckList.append(ingredient)
                 }
                 else {
+                    binding.unusedIngredients.visibility = View.VISIBLE
                     if (missedIngredientsCheckList.isNotEmpty())
                         missedIngredientsCheckList.append(", ")
                     missedIngredientsCheckList.append(ingredient)
                 }
             }
 
-            //only show the list if its not empty
-            if(usedIngredientsCheckList.isNotEmpty())
-                binding.usedIngredients.text = "$usedIngredientsCheckList"
-            else
-                binding.usedIngredients.visibility = View.GONE
-
-            if(missedIngredientsCheckList.isNotEmpty())
-                binding.unusedIngredients.text = "$missedIngredientsCheckList"
-            else
-                binding.unusedIngredients.visibility = View.GONE
+            binding.usedIngredients.text = "$usedIngredientsCheckList"
+            binding.unusedIngredients.text = "$missedIngredientsCheckList"
 
             //download image
             Glide.with(binding.root.context)

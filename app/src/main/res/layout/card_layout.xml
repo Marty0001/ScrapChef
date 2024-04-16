@@ -54,6 +54,7 @@
         <TextView
             android:id="@+id/usedIngredients"
             android:layout_width="150dp"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
@@ -71,6 +72,7 @@
         <TextView
             android:id="@+id/unusedIngredients"
             android:layout_width="150dp"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
