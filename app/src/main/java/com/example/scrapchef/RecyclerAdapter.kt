@@ -56,34 +56,45 @@ class RecyclerAdapter(private val recipes: Map<String, RecipeData>, private val 
 
             //list of all used ingredients in recipe, even ones not selected by user
             val usedIngredientsList = recipe.usedIngredients.map { it.name }
+            val aisleNameIngredientsList = recipe.usedIngredients.map { it.aisle }
+            val missedIngredientsList = recipe.missedIngredients.map { it.name }
 
-            val usedIngredientsCommaList = StringBuilder()
-            val unusedIngredientsCommaList = StringBuilder()
+            val usedIngredientsCheckList = StringBuilder()
+            val missedIngredientsCheckList = StringBuilder()
 
             //for every selected ingredient, if the recipe contains it, add it to used list
             for (ingredient in ingredients) {
 
                 //if a user selected ingredient is used in the recipe, add it to the used list
-                if (usedIngredientsList.any { it.contains(ingredient, ignoreCase = true) }) {
-                    if (usedIngredientsCommaList.isNotEmpty())
-                        usedIngredientsCommaList.append(", ")
-                    usedIngredientsCommaList.append(ingredient)
+                //also check if aisle name contains the ingredient name because if user picks 'cheese', the ingredient name could be 'parmigiano-reggiano' in the 'cheese' aisle
+                //also check if a selected ingredient contains a substring of an ingredient in one of the lists so that something like 'cheddar cheese' = 'cheese'
+                if (usedIngredientsList.any { it.contains(ingredient, ignoreCase = true) } ||
+                    aisleNameIngredientsList.any { it.contains(ingredient, ignoreCase = true) } ||
+                    missedIngredientsList.any { it.contains(ingredient, ignoreCase = true) } ||
+
+                    usedIngredientsList.any { ingredient.contains(it, ignoreCase = true) } ||
+                    aisleNameIngredientsList.any { ingredient.contains(it, ignoreCase = true) } ||
+                    missedIngredientsList.any { ingredient.contains(it, ignoreCase = true) }) {
+
+                    if (usedIngredientsCheckList.isNotEmpty())
+                        usedIngredientsCheckList.append(", ")
+                    usedIngredientsCheckList.append(ingredient)
                 }
                 else {
-                    if (unusedIngredientsCommaList.isNotEmpty())
-                        unusedIngredientsCommaList.append(", ")
-                    unusedIngredientsCommaList.append(ingredient)
+                    if (missedIngredientsCheckList.isNotEmpty())
+                        missedIngredientsCheckList.append(", ")
+                    missedIngredientsCheckList.append(ingredient)
                 }
             }
 
             //only show the list if its not empty
-            if(usedIngredientsCommaList.isNotEmpty())
-                binding.usedIngredients.text = "$usedIngredientsCommaList"
+            if(usedIngredientsCheckList.isNotEmpty())
+                binding.usedIngredients.text = "$usedIngredientsCheckList"
             else
                 binding.usedIngredients.visibility = View.GONE
 
-            if(unusedIngredientsCommaList.isNotEmpty())
-                binding.unusedIngredients.text = "$unusedIngredientsCommaList"
+            if(missedIngredientsCheckList.isNotEmpty())
+                binding.unusedIngredients.text = "$missedIngredientsCheckList"
             else
                 binding.unusedIngredients.visibility = View.GONE
 

@@ -9,4 +9,5 @@
     <string name="back_to_recipes">Back to recipes</string>
     <string name="ingredients">Ingredients:</string>
     <string name="no_recipe_found">No Recipe Directions Found</string>
+    <string name="no_results_found">No results found...</string>
 </resources>

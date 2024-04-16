@@ -63,7 +63,7 @@ class RecipeViewModel : ViewModel() {
             ingredientsQuery.append(",+$item")
         }
 
-        val url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients=$ingredientsQuery&sort=max-used-ingredients&number=5" +
+        val url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients=$ingredientsQuery&sort=max-used-ingredients&number=20" +
                 "&apiKey=42c0d09e6c564072a4cbbd1a204a5c64"
 
         val queue = Volley.newRequestQueue(context)

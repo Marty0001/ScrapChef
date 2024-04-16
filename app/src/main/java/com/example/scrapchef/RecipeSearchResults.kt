@@ -1,5 +1,6 @@
 package com.example.scrapchef
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -25,14 +26,6 @@ class RecipeSearchResults : Fragment(), RecyclerAdapter.OnRecipeItemClickListene
     ): View {
         binding = FragmentRecipeSearchResultsBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onItemClick(recipe: RecipeData) {
@@ -72,11 +65,18 @@ class RecipeSearchResults : Fragment(), RecyclerAdapter.OnRecipeItemClickListene
             //wait to fetch recipes, then fill the recycler view
             recipeViewModel.recipeList.observe(viewLifecycleOwner) { recipeMap ->
 
-                adapter = RecyclerAdapter(recipeMap, currentIngredientsList)
-                adapter.setOnRecipeItemClickListener(this)
-                binding.recyclerView.adapter = adapter
+                if(recipeMap.isEmpty()){
+                    binding.noResults.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
+                }
+                else {
 
-                binding.progressBar.visibility = View.GONE
+                    adapter = RecyclerAdapter(recipeMap, currentIngredientsList)
+                    adapter.setOnRecipeItemClickListener(this)
+                    binding.recyclerView.adapter = adapter
+
+                    binding.progressBar.visibility = View.GONE
+                }
             }
 
             //navigate back to search fragment and send back the selected ingredients to remake the ingredient bubbles

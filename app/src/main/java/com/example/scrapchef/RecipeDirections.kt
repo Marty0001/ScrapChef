@@ -90,10 +90,11 @@ class RecipeDirections : Fragment() {
             alreadyListedIngredient.add(ingredient.name)
 
             val ingredientText = buildString {
-                append(ingredient.name)
 
                 //get the ingredient amount and unit from the first recipe because the individual recipe fetch doesn't contain the amounts
-                val ingredientAmount = recipe.usedIngredients.firstOrNull { it.name == ingredient.name }
+                //also check the missed list for cases where a selected ingredient is used but not detected as used by api
+                val ingredientAmount = recipe.usedIngredients.firstOrNull { it.name.contains(ingredient.name, ignoreCase = true) }
+                    ?: recipe.missedIngredients.firstOrNull { it.name.contains(ingredient.name, ignoreCase = true) }
 
                 if (ingredientAmount != null) {
                     if (ingredientAmount.amount > 0)
@@ -117,7 +118,7 @@ class RecipeDirections : Fragment() {
 
                 typeface = ResourcesCompat.getFont(context, R.font.lora)
 
-                text = "•${ingredientText}"
+                text = "•${ingredientText} ${ingredient.name}"
             }
 
             ingredientTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(R.dimen.direction_text_size))
@@ -133,7 +134,7 @@ class RecipeDirections : Fragment() {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 val margin = resources.getDimensionPixelSize(R.dimen.step_row_margin)
-                setMargins(margin, margin*3, margin, margin*3)
+                setMargins(margin, margin*4, margin, margin*4)
             }
             orientation = LinearLayout.HORIZONTAL
         }
