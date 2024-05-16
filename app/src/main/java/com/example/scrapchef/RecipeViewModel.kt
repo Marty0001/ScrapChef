@@ -10,8 +10,14 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.File
+import java.io.InputStream
+import java.io.InputStreamReader
 
 class RecipeViewModel : ViewModel() {
+
+    private val apiKey = "API KEY HERE!"
 
     //list of recipes gotten by searching by ingredients
     private val _recipeList: MutableLiveData<MutableMap<String, RecipeData>> = MutableLiveData()
@@ -24,7 +30,7 @@ class RecipeViewModel : ViewModel() {
     fun fetchRecipeDirections(context: Context, recipeId : Int){
 
         val url = "https://api.spoonacular.com/recipes/$recipeId/analyzedInstructions?stepBreakdown" +
-                "&apiKey=42c0d09e6c564072a4cbbd1a204a5c64"
+                "&apiKey=${apiKey}"
 
         val queue = Volley.newRequestQueue(context)
 
@@ -64,7 +70,7 @@ class RecipeViewModel : ViewModel() {
         }
 
         val url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients=$ingredientsQuery&sort=max-used-ingredients&number=20" +
-                "&apiKey=42c0d09e6c564072a4cbbd1a204a5c64"
+                "&apiKey=${apiKey}"
 
         val queue = Volley.newRequestQueue(context)
 
